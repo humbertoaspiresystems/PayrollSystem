@@ -19,9 +19,8 @@ public class PayRollSystem{
 		EmployeeInfo employeeInfo=new EmployeeInfo();
 		employeeInfo.getNumberOfEmployees();
 		employeeInfo.getData();
-		ShowTotalPayment showTotalPayment=new ShowTotalPayment();
-		showTotalPayment.getSalaryType();
-		//showTotalPayment.showPayment();
-		//showTotalPayment.showEmployeeStartAndBonus();
+		employeeInfo.getSalaryType();
+		employeeInfo.showPayment();
+		employeeInfo.showEmployeeStartAndBonus();
 	}
 }
