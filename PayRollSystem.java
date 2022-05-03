@@ -13,14 +13,19 @@
  Reviewd at:4-27-2022
  1. Use proper name for exceptions
  */
-public class PayRollSystem{
+public class PayRollSystem {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		EmployeeInfo employeeInfo=new EmployeeInfo();
+		EmployeeInfo employeeInfo = new EmployeeInfo();
 		employeeInfo.getNumberOfEmployees();
 		employeeInfo.getData();
-		employeeInfo.getSalaryType();
-		employeeInfo.showPayment();
-		employeeInfo.showEmployeeStartAndBonus();
+		employeeInfo.paymentList("Bengochea"); // create exception of there is no one with that last name
+		employeeInfo.paymentList("Wilke");
+		employeeInfo.paymentList("Daniels");
+		employeeInfo.paymentList("Smith");
+		employeeInfo.paymentQueue();
+		//employeeInfo.displayEmployees();
+		//employeeInfo.displayPayment();
+		//employeeInfo.payEmployee();
 	}
 }
