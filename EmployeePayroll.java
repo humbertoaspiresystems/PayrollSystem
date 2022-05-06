@@ -1,4 +1,9 @@
 package com.aspire.employeePayroll;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.InputMismatchException;
@@ -8,29 +13,33 @@ import java.util.Scanner;
 import com.aspire.employeeDetails.EmployeeDetails;
 
 public class EmployeePayroll extends EmployeeDetails {
+	
+	//Method for getting the quantity of employees
+	/*	public void getNumberOfEmployees() {
+			System.out.println("How many employees do you want to add?");
+			numberOfEmployees=employeeScanner.nextInt();
+			String[] fullName = new String[numberOfEmployees];
+			System.out.println(fullName.length);
+		}
 	//Scanner,list,queue and public variables declaration
 	Scanner employeeScanner = new Scanner(System.in);
-	ArrayList<String> paymentOrder = new ArrayList<String>();
+	/*ArrayList<String> paymentOrder = new ArrayList<String>();
 	PriorityQueue<String> paymentQueue = new PriorityQueue<>();
-	String[] firstName = new String[numberOfEmployees];
+	public int numberOfEmployees;
+	public String[] firstName = new String[numberOfEmployees];
 	String[] lastName = new String[numberOfEmployees];
 	int[] employeeID = new int[numberOfEmployees];
 	String[] fullName = new String[numberOfEmployees];
-	int[] startYear = new int[numberOfEmployees];
+	String[] salaryTypes = new String[numberOfEmployees];
 	double[] bonusPay = new double[numberOfEmployees];
 	double[] grossPayment=new double[numberOfEmployees];
 	double[] netPayment = new double[numberOfEmployees];
 	double[] tax = new double[numberOfEmployees];
-	String[] salaryTypes = new String[numberOfEmployees];
-	//Method for getting the quantity of employees
-	public void getNumberOfEmployees() {
-		System.out.println("There are "+numberOfEmployees+" employees to register in the payroll system");
-	}
-
+	int[] startYear = new int[numberOfEmployees];
+	
 	public void getEmployeeData() {
 		//Declaration of String, int and double arrays
 		int validateInput=0;
-		//String[] salaryTypes = new String[numberOfEmployees];
 		//For loop for employee first and last name input
 		for(int numberOfEmployeesReached = 0; numberOfEmployeesReached < numberOfEmployees; numberOfEmployeesReached++) {
 			try {
@@ -111,29 +120,165 @@ public class EmployeePayroll extends EmployeeDetails {
 			 //System.out.println("Employee has " + (currentYear - startYear[counter]) + " years working and his bonus is "+ bonusPay[counter] + " Mexican pesos");
 		 }
 }
-	public void paymentList(String lastName) {
+	/*public void paymentList(String lastName) {
 		paymentOrder.add(lastName);
 		System.out.println("You need to pay " + lastName);
-	}
-
-	public void paymentQueue() {
+	}*/
+/*
+	public void paymentQueue() {/*
 		int[] startYearOrder=startYear;
 		Arrays.sort(startYearOrder);
 		for(int counter=0; counter<startYearOrder.length; counter++) {
 			System.out.println(startYearOrder[counter]);
 		}
+		*/
+	//	System.out.println("ahora si jalo");
+//	}
+	Scanner employeeScanner = new Scanner(System.in);
+	//New coding here
+	public void showPayrollSystemStartup() {
+		System.out.println("==============================================");
+		System.out.println("\tWelcome to Aspire Payroll System");
+		System.out.println("==============================================");
+		System.out.println("1.Add Employee");
+		System.out.println("2.Remove Employee");
+		System.out.println("3.Pay Employee");
+		System.out.println("4.Display all employees");
+		System.out.println("5.Display payment queue");
+		System.out.println("6.Exit Payroll System");
+		System.out.println("==============================================");
+		int optionSelect=0;
+		while(optionSelect!=6) {
+		optionSelect=employeeScanner.nextInt();
+		switch(optionSelect) {
+		case 1: addEmployee();
+				break;
+		case 2: removeEmployee();
+				break;
+		case 3: payEmployee();
+				break;
+		case 4: displayEmployees();
+				break;
+		case 5: displayQueue();
+				break;
+		case 6: System.out.println("Exiting Payroll System");
+				
+		}}
+	}
+	
+	String user="root";
+	String password="aspire@123";
+	String url="jdbc:mysql://localhost:3306/Employees";
+	Connection connection=null;
+	
+	public void connectDatabase() {
+		//Connection to SQL Database
+				try{ 
+					Class.forName("com.mysql.cj.jdbc.Driver");
+					connection=DriverManager.getConnection(url,user,password);}
+					catch(ClassNotFoundException classNotFound) {
+						classNotFound.printStackTrace();}
+					catch(SQLException sqlException) {
+						sqlException.printStackTrace();}	
+				System.out.println("Connected to Database.");
+	}
+	
+	public void closeDatabase() {
+		try {
+			connection.close();}
+			catch(SQLException e) {
+				e.printStackTrace();}
+		System.out.println("Disconnected from database.");
+	}
+	public void addEmployee() {
+		employeeScanner.nextLine();
+		
+		System.out.print("Enter new employee first name:");
+		firstName=employeeScanner.nextLine();
+		
+		System.out.print("Enter new employee last name:");
+		lastName=employeeScanner.nextLine();
+		
+		System.out.print("Enter new employee ID:");
+		employeeID=employeeScanner.nextInt();
+		
+		System.out.print("Enter new salary type(Enter Half Time or Full Time):");
+		employeeScanner.nextLine();
+		salaryType=employeeScanner.nextLine();
+		
+		System.out.print("Enter new employee starting year:");
+		startYear=employeeScanner.nextInt();
+		
+		if(salaryType.equals("Half Time")==true)
+			salary=8500;
+		
+		if(salaryType.equals("Full Time")==true)
+			salary=18500;
+		
+		paymentStatus="Unpaid";
+		
+		System.out.println(firstName+" "+lastName+" "+employeeID+" "+salaryType+" "+startYear+" "+salary+" "+paymentStatus);
+
+		try {
+		Statement statement=connection.createStatement();
+		String addEmployee="INSERT IGNORE INTO Employees VALUES ('"+firstName+"','"+lastName+"',"+employeeID+",'"+salaryType+"',"+startYear+",'"+salary+"','"+paymentStatus+"')";
+		statement.execute(addEmployee);
+		System.out.println("Employee added to database.");
+		}
+		catch(SQLException sqlException) {
+			sqlException.printStackTrace();}
+		
+	}
+	public void removeEmployee() {
+		employeeScanner.nextLine();
+		
+		System.out.print("Enter employee first name:");
+		firstName=employeeScanner.nextLine();
+		System.out.print("Enter employee last name:");
+		lastName=employeeScanner.nextLine();
+		
+		try {
+			Statement statement=connection.createStatement();
+			String deleteEmployee="DELETE FROM Employees WHERE First_Name='"+firstName+"' AND Last_Name='"+lastName+"'";
+			statement.execute(deleteEmployee);
+			System.out.println("Employee deleted from database.");
+			}
+			catch(SQLException sqlException) {
+				sqlException.printStackTrace();}
+	}
+	public void payEmployee() {
+		
+		System.out.print("Enter employee ID:");
+		employeeID=employeeScanner.nextInt();
+		
+		try {
+			Statement statement=connection.createStatement();
+			String payEmployee="UPDATE Employees SET Payment_Status='Paid' WHERE Employee_ID="+employeeID;
+			statement.execute(payEmployee);
+			System.out.println("Employee deleted from database.");
+			}
+			catch(SQLException sqlException) {
+				sqlException.printStackTrace();}
 		
 	}
 	
 	public void displayEmployees() {
-		for(int counter=0; counter<numberOfEmployees; counter++) {
-			System.out.print("Employee:"+fullName[counter]+"\tID:"+employeeID[counter]);
-			if(salaryTypes[counter].equals("H"))
-				System.out.print("\tSalary Type: Half Time");
-			else
-				System.out.print("\tSalary Type: Full Time");
-			System.out.print("\tStart Date:"+startYear[counter]+"\n");
+		try {
+		Statement statement=connection.createStatement();
+		String showEmployees="SELECT * FROM Employees";
+		ResultSet result=statement.executeQuery(showEmployees);
+		while(result.next()) {
+			String employeeData="";
+			for(int i=1; i<8; i++) {
+			employeeData+=result.getString(i)+"\t";}
+			System.out.println(employeeData);
+			}
 		}
+		catch(SQLException sqlException) {
+			sqlException.printStackTrace();}	
 	}
 	
+	public void displayQueue() {
+		
+	}
 }
