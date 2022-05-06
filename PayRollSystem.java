@@ -1,7 +1,5 @@
 package com.aspire.controller;
-
 import com.aspire.employeePayroll.EmployeePayroll;
-
 /* Title: Pay Roll Processing System
  * Author: Jose Humberto Bengochea Aranda
  * Created at:4-16-2022
@@ -9,11 +7,6 @@ import com.aspire.employeePayroll.EmployeePayroll;
  * Reviewed by: Anitha Manogaran
  * Reviewed at:4-20-22
  Suggestions by Anitha: 
- 1. You can use display method to display all the details
- 2. Now take a contract employee, calculate salary for contract employee EMPLOYEE CATEGORY REGULAR EMPLOYEE AND CONTRACT
- You can extend payroll system class for both employees
- 3. Think about interface, how to implement interface concepts and Abstract class
- 4. Constructors for application
  Reviewed at:5-03-2022
  1. Use proper name for exceptions
  2. MORE SPECIFIC EXCEPTION CLASSES, AT LAST MORE GENERICA CLASS
@@ -24,17 +17,11 @@ import com.aspire.employeePayroll.EmployeePayroll;
  */
 public class PayRollSystem {
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		
 		EmployeePayroll employeePayroll = new EmployeePayroll();
-		employeePayroll.getNumberOfEmployees();
-		employeePayroll.getEmployeeData();
-		employeePayroll.paymentList("Bengochea"); // create exception of there is no one with that last name
-		employeePayroll.paymentList("Wilke");
-		employeePayroll.paymentList("Daniels");
-		employeePayroll.paymentList("Smith");
-		employeePayroll.paymentQueue();
-		employeePayroll.displayEmployees();
-		//employeePayroll.displayPayment();
-		//employeePayroll.payEmployee();
+		employeePayroll.connectDatabase();
+		employeePayroll.showPayrollSystemStartup();
+		//employeePayroll.displayEmployees();
+		
 	}
 }
