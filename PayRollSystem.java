@@ -21,7 +21,5 @@ public class PayRollSystem {
 		EmployeePayroll employeePayroll = new EmployeePayroll();
 		employeePayroll.connectDatabase();
 		employeePayroll.showPayrollSystemStartup();
-		//employeePayroll.displayEmployees();
-		
 	}
 }
