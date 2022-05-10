@@ -13,4 +13,6 @@ public class EmployeeDetails {
 	public void getNumberOfEmployees() {};
 	public void getEmployeeData() {}
 	public void paymentQueue() {};
+	
+	public void testing() {};
 }
