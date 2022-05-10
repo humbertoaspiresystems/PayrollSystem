@@ -34,8 +34,16 @@ public class EmployeePayroll extends EmployeeDetails {
 		int optionSelect=0;
 		while(optionSelect!=6) {
 		System.out.print("Enter option:");
-		optionSelect=employeeScanner.nextInt();
+		try {
+		optionSelect=employeeScanner.nextInt();}
+		catch(InputMismatchException inputMismatchException) {
+			System.out.println("Invalid input, please try again.");
+			optionSelect=0;
+			
+		}
 		switch(optionSelect) {
+		case 0: employeeScanner.nextLine();
+				break;
 		case 1: addEmployee();
 				break;
 		case 2: removeEmployee();
@@ -49,7 +57,12 @@ public class EmployeePayroll extends EmployeeDetails {
 		case 6: System.out.println("Exiting Payroll System.");
 				closeDatabase();
 				System.exit(0);
-		case 7:testing();
+				break;
+		case 7: testing();
+				break;
+		
+		default: System.out.println("Invalid option, please try again.");
+				 break;
 		}}
 	}
 	
@@ -183,18 +196,34 @@ public class EmployeePayroll extends EmployeeDetails {
 	}
 	public void payEmployee() {
 		
-		System.out.print("Enter employee ID:");
-		employeeID=employeeScanner.nextInt();
-		
 		try {
-			Statement statement=connection.createStatement();
-			String payEmployee="UPDATE Employees SET Payment_Status='Paid' WHERE Employee_ID="+employeeID;
-			statement.execute(payEmployee);
-			System.out.println("Employee payment done.");
+			
+			while(employeeID==0) {
+			
+			System.out.print("Enter employee ID:");
+			try {
+			employeeID=employeeScanner.nextInt();}
+			catch(InputMismatchException inputMismatchException) {
+				System.out.println("Wrong input for ID, please try again.");
+				employeeScanner.nextLine();
+				employeeID=0;
 			}
+			String checkEmployeeExists="SELECT First_Name FROM Employees WHERE Employee_ID="+employeeID;
+			Statement statement=connection.createStatement();
+			ResultSet result=statement.executeQuery(checkEmployeeExists);
+			if(result.next()==false) {
+				System.out.println("There is no employee with that ID,try again.");
+				employeeID=0;}
+			
+			else {
+				if(employeeID!=0) {
+						String payEmployee="UPDATE Employees SET Payment_Status='Paid' WHERE Employee_ID="+employeeID;
+						statement.execute(payEmployee);
+						System.out.println("Employee payment done.");}}}}
+			
 			catch(SQLException sqlException) {
 				sqlException.printStackTrace();}
-		
+			
 	}
 	
 	
@@ -237,7 +266,5 @@ public class EmployeePayroll extends EmployeeDetails {
 		firstName=employeeScanner.nextLine();
 		System.out.print("Enter employee last name:");
 		lastName=employeeScanner.nextLine();*/
-		
-		
 	}
 }
