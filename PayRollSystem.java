@@ -1,25 +1,28 @@
 package com.aspire.controller;
 import com.aspire.employeePayroll.EmployeePayroll;
+import org.apache.logging.log4j.*;
 /* Title: Pay Roll Processing System
  * Author: Jose Humberto Bengochea Aranda
  * Created at:4-16-2022
- * Updated at:4-20-2022
- * Reviewed by: Anitha Manogaran
- * Reviewed at:4-20-22
- Suggestions by Anitha: 
- Reviewed at:5-03-2022
- 1. Use proper name for exceptions
- 2. MORE SPECIFIC EXCEPTION CLASSES, AT LAST MORE GENERICA CLASS
- 3. SPECIFY FOR INPUT
- 4. IF WE WANT MORE EMPLOYEES, HOW TO ADD THEM UP? ADD EMPLOYEE METHOD, ADD IN MAIN METHOD
- 5. EXCEPTIONS FOR VALIDATING DATA, NAME AND ID AND SALARY TYPE
- 6. EXCEPTION FOR START YEARS VALIDATION CHECK STRING/INTS
+ * Updated at:5-10-2022
+ * Reviewed by: Anitha
+ * Reviewed at:5-10-2022
+ * Suggestions:
+//Display options from menu
+//Try logger files - extra
+//Use Private method for database connection - same class can be static
+//Use thread for sleep
+//Use Static blocks and methods
  */
-public class PayRollSystem {
+public class PayRollSystem extends Thread{
+	//private static Logger demoLogger=LogManager.getLogger(PayRollSystem.class.getName());
 	public static void main(String[] args) {
-		
 		EmployeePayroll employeePayroll = new EmployeePayroll();
-		employeePayroll.connectDatabase();
+		employeePayroll.start();
+		//employeePayroll.connectDatabase();
 		employeePayroll.showPayrollSystemStartup();
+		//demoLogger.info("Click successfull");
+		//demoLogger.error("DB Connection Failed");
+		//demoLogger.debug("This is a debug");
 	}
 }
