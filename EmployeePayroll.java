@@ -22,9 +22,9 @@ public class EmployeePayroll extends EmployeeDetails {
 		System.out.println("============================================");}
 	public void showPayrollSystemStartup() {
 		connectDatabase();
-		int optionSelect=0;
-		while(optionSelect!=6) {
-			waitInput();
+		int menuOptionSelect=0;
+		while(menuOptionSelect!=6) {
+			waitForInput();
 			System.out.println("============================================");
 			System.out.println("  Select an option from the following menu.  ");
 			System.out.println("============================================");
@@ -37,38 +37,28 @@ public class EmployeePayroll extends EmployeeDetails {
 			System.out.println("============================================");
 			System.out.print("Enter option:");
 		try {
-		optionSelect=employeeScanner.nextInt();
+		menuOptionSelect=employeeScanner.nextInt();
 		employeeScanner.nextLine();}
 		catch(InputMismatchException inputMismatchException) {
 			System.out.println("Invalid input, please try again.");
-			optionSelect=0;
+			menuOptionSelect=0;
 			
 		}
-		switch(optionSelect) {
-
+		switch(menuOptionSelect) {
 		case 1: addEmployee();
 				break;
-				
 		case 2: removeEmployee();
 				break;
-				
 		case 3: payEmployee();
 				break;
-				
 		case 4: displayEmployees();
 				break;
-				
 		case 5: displayQueue();
 				break;
-				
 		case 6: System.out.println("Exiting Payroll System.");
 				closeDatabase();
 				System.exit(0);
-				break;	
-				
-		case 7: testing();
-				break;
-
+				break;		
 		default: System.out.println("Invalid option, please try again.");
 				 break;
 		}}
@@ -76,17 +66,17 @@ public class EmployeePayroll extends EmployeeDetails {
 	private String user="root";
 	private String password="aspire@123";
 	private String url="jdbc:mysql://localhost:3306/Employees";
-	private Connection connection=null;
+	private Connection connectionToDatabase=null;
 	private void connectDatabase(){ 
 				try{ 
-					connection=DriverManager.getConnection(url,user,password);}
+					connectionToDatabase=DriverManager.getConnection(url,user,password);}
 					catch(SQLException sqlException) {
 						sqlException.printStackTrace();}	
 				System.out.println("  Connected to Database.");
 	}
 	private void closeDatabase() { 
 		try {
-			connection.close();}
+			connectionToDatabase.close();}
 			catch(SQLException sqlException) {
 				sqlException.printStackTrace();}
 		System.out.println("Disconnected from database.");
@@ -145,15 +135,15 @@ public class EmployeePayroll extends EmployeeDetails {
 			salary=18500+18500*(currentYear-startYear)*0.07;
 		paymentStatus="Unpaid";
 		try {
-		Statement statement=connection.createStatement();
+		Statement statement=connectionToDatabase.createStatement();
 		String validateEmployeeExistence="SELECT Employee_ID FROM Employees WHERE First_Name='"+firstName+"' AND Last_Name='"+lastName+"'";
-		ResultSet result=statement.executeQuery(validateEmployeeExistence);
-		if(result.next()==true)
+		ResultSet employeeExistenceValidation=statement.executeQuery(validateEmployeeExistence);
+		if(employeeExistenceValidation.next()==true)
 			System.out.println("Employee already exists in database.");
 		else {
 			String validateId="SELECT Employee_ID FROM Employees WHERE Employee_ID="+employeeID;
-			ResultSet result2=statement.executeQuery(validateId);
-			if(result2.next()==true) 
+			ResultSet employeeIdValidation=statement.executeQuery(validateId);
+			if(employeeIdValidation.next()==true) 
 				System.out.println("Employee ID already exists in database.");
 			else {
 				String addEmployee="INSERT IGNORE INTO Employees VALUES ('"+firstName+"','"+lastName+"',"+employeeID+",'"+salaryType+"',"+startYear+",'"+salary+"','"+paymentStatus+"')";
@@ -175,10 +165,10 @@ public class EmployeePayroll extends EmployeeDetails {
 				employeeScanner.nextLine();
 				employeeID=0;
 			}
-			String checkEmployeeExists="SELECT First_Name FROM Employees WHERE Employee_ID="+employeeID;
-			Statement statement=connection.createStatement();
-			ResultSet result=statement.executeQuery(checkEmployeeExists);
-			if(result.next()==false) {
+			String checkEmployeeExistence="SELECT First_Name FROM Employees WHERE Employee_ID="+employeeID;
+			Statement statement=connectionToDatabase.createStatement();
+			ResultSet validateEmployeeExistence=statement.executeQuery(checkEmployeeExistence);
+			if(validateEmployeeExistence.next()==false) {
 				System.out.println("There is no employee with that ID,try again.");
 				employeeID=0;}
 			else {
@@ -201,10 +191,10 @@ public class EmployeePayroll extends EmployeeDetails {
 				employeeScanner.nextLine();
 				employeeID=0;
 			}
-			String checkEmployeeExists="SELECT First_Name FROM Employees WHERE Employee_ID="+employeeID;
-			Statement statement=connection.createStatement();
-			ResultSet result=statement.executeQuery(checkEmployeeExists);
-			if(result.next()==false) {
+			String checkEmployeeExistence="SELECT First_Name FROM Employees WHERE Employee_ID="+employeeID;
+			Statement statement=connectionToDatabase.createStatement();
+			ResultSet validateEmployeeExistence=statement.executeQuery(checkEmployeeExistence);
+			if(validateEmployeeExistence.next()==false) {
 				System.out.println("There is no employee with that ID,try again.");
 				employeeID=0;}
 			else {
@@ -217,13 +207,13 @@ public class EmployeePayroll extends EmployeeDetails {
 	}
 	public void displayEmployees() {
 		try {
-		Statement statement=connection.createStatement();
-		String showEmployees="SELECT * FROM Employees";
-		ResultSet result=statement.executeQuery(showEmployees);
-		while(result.next()) {
+		Statement statement=connectionToDatabase.createStatement();
+		String getEmployees="SELECT * FROM Employees";
+		ResultSet showEmployees=statement.executeQuery(getEmployees);
+		while(showEmployees.next()) {
 			String employeeData="";
 			for(int databaseRowCounter=1; databaseRowCounter<8; databaseRowCounter++) {
-			employeeData+=result.getString(databaseRowCounter)+"\t";}
+			employeeData+=showEmployees.getString(databaseRowCounter)+"\t";}
 			System.out.println(employeeData);
 			}
 		}
@@ -232,20 +222,20 @@ public class EmployeePayroll extends EmployeeDetails {
 	}
 	public void displayQueue() { 
 		try {
-			Statement statement=connection.createStatement();
-			String displayQueue="SELECT First_Name,Last_Name,Salary FROM Employees WHERE Payment_Status='Unpaid' ORDER BY Start_Year ASC";
-			ResultSet result=statement.executeQuery(displayQueue);
-			while(result.next()) {
+			Statement statement=connectionToDatabase.createStatement();
+			String getQueue="SELECT First_Name,Last_Name,Salary FROM Employees WHERE Payment_Status='Unpaid' ORDER BY Start_Year ASC";
+			ResultSet showQueue=statement.executeQuery(getQueue);
+			while(showQueue.next()) {
 				String employeeData="";
 				for(int databaseRowCounter=1; databaseRowCounter<4; databaseRowCounter++) 
-					employeeData+=result.getString(databaseRowCounter)+" ";
+					employeeData+=showQueue.getString(databaseRowCounter)+" ";
 				System.out.println("You owe "+employeeData+"Mexican pesos.");
 				}
 			}
 			catch(SQLException sqlException) {
 				sqlException.printStackTrace();}
 	}
-	void waitInput() {
+	void waitForInput() {
 		try {
 			Thread.sleep(2000);} 
 		catch(InterruptedException interruptedException) {
